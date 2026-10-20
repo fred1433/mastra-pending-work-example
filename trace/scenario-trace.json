@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-20T13:42:29.041Z",
+  "generatedAt": "2026-10-20T14:21:56.478Z",
   "steps": [
     {
       "seq": 1,
@@ -28,7 +28,7 @@
       "kind": "process",
       "step": "Process 1 started",
       "detail": {
-        "pid": 64903
+        "pid": 51061
       }
     },
     {
@@ -158,7 +158,7 @@
       "kind": "input",
       "step": "Email in B",
       "detail": {
-        "body": "Hi, quick update for the 14th: we will be 10 people, not 8. Two of them are vegetarian.",
+        "body": "Hi, quick update for the 14th: we will be 10 people, not 8.",
         "from": "dev@northfield.example",
         "subject": "Headcount for 14 November",
         "audience": "external",
@@ -281,7 +281,7 @@
         "author": "Maya Ortiz (manager, from session)",
         "audience": "internal",
         "decision": "approve up to 10%",
-        "messageId": "NOTE-mvgqg77j0",
+        "messageId": "NOTE-mvgruxts0",
         "explicitReference": "W1"
       }
     },
@@ -294,7 +294,7 @@
       "step": "Source linked as decision",
       "detail": {
         "reason": "explicit reference from the note box",
-        "messageId": "NOTE-mvgqg77j0",
+        "messageId": "NOTE-mvgruxts0",
         "workItemId": "W1"
       }
     },
@@ -352,7 +352,7 @@
         "guests": 8,
         "sources": [
           "MSG-a1 (origin, external)",
-          "NOTE-mvgqg77j0 (decision, internal)"
+          "NOTE-mvgruxts0 (decision, internal)"
         ],
         "workItemId": "W1",
         "authorisation": "10% by Maya Ortiz",
@@ -375,7 +375,7 @@
         "discount": "10%",
         "evidence": [
           "MSG-a1",
-          "NOTE-mvgqg77j0"
+          "NOTE-mvgruxts0"
         ],
         "proposalId": "W1-r1",
         "authorisedBy": "Maya Ortiz",
@@ -409,9 +409,9 @@
       "step": "Suspended for approval of W1-r1",
       "detail": {
         "note": "requireApproval: Mastra persists the suspended run in Postgres",
-        "runId": "c426c38c-530e-477c-a2e8-ba1c85825db9",
+        "runId": "0e913066-7f94-47c3-af44-911c661d7ac0",
         "proposalId": "W1-r1",
-        "toolCallId": "call_7b3d7326"
+        "toolCallId": "call_077f3ed2"
       }
     },
     {
@@ -497,7 +497,7 @@
       "kind": "state",
       "step": "Suspended call for W1-r1 declined",
       "detail": {
-        "runId": "c426c38c-530e-477c-a2e8-ba1c85825db9",
+        "runId": "0e913066-7f94-47c3-af44-911c661d7ac0",
         "reason": "booking changed (v1 → v2)",
         "proposalId": "W1-r1"
       }
@@ -588,14 +588,14 @@
       "process": 1,
       "actor": "worker",
       "kind": "process",
-      "step": "Run started for W2",
+      "step": "Run started for W1",
       "detail": {
         "reasons": [
-          "booking changed",
+          "redraft after booking change",
           "booking changed"
         ],
-        "workItemId": "W2",
-        "mastraThread": "work:W2",
+        "workItemId": "W1",
+        "mastraThread": "work:W1",
         "mastraResource": "org_1:booking:B-1042"
       }
     },
@@ -610,73 +610,8 @@
         "total": "£1,000.00",
         "guests": 10,
         "sources": [
-          "MSG-b1 (origin, external)"
-        ],
-        "workItemId": "W2",
-        "authorisation": null,
-        "bookingVersion": 3
-      }
-    },
-    {
-      "seq": 42,
-      "time": "09:34:30",
-      "process": 1,
-      "actor": "assistant",
-      "kind": "state",
-      "step": "W2 closed",
-      "detail": {
-        "outcome": "Headcount 10 is now recorded on booking v3. Nothing to send.",
-        "workItemId": "W2"
-      }
-    },
-    {
-      "seq": 43,
-      "time": "09:34:30",
-      "process": 1,
-      "actor": "assistant",
-      "kind": "model",
-      "step": "Model calls",
-      "detail": {
-        "calls": 3,
-        "steps": [
-          "readWorkContext",
-          "closeWork",
-          "text reply"
-        ],
-        "window": "7 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages)",
-        "workItemId": "W2"
-      }
-    },
-    {
-      "seq": 44,
-      "time": "09:34:30",
-      "process": 1,
-      "actor": "worker",
-      "kind": "process",
-      "step": "Run started for W1",
-      "detail": {
-        "reasons": [
-          "redraft after booking change",
-          "booking changed"
-        ],
-        "workItemId": "W1",
-        "mastraThread": "work:W1",
-        "mastraResource": "org_1:booking:B-1042"
-      }
-    },
-    {
-      "seq": 45,
-      "time": "09:34:30",
-      "process": 1,
-      "actor": "assistant",
-      "kind": "model",
-      "step": "Tool readWorkContext",
-      "detail": {
-        "total": "£1,000.00",
-        "guests": 10,
-        "sources": [
           "MSG-a1 (origin, external)",
-          "NOTE-mvgqg77j0 (decision, internal)"
+          "NOTE-mvgruxts0 (decision, internal)"
         ],
         "workItemId": "W1",
         "authorisation": "10% by Maya Ortiz",
@@ -684,7 +619,7 @@
       }
     },
     {
-      "seq": 46,
+      "seq": 42,
       "time": "09:34:30",
       "process": 1,
       "actor": "app",
@@ -699,7 +634,7 @@
         "discount": "10%",
         "evidence": [
           "MSG-a1",
-          "NOTE-mvgqg77j0"
+          "NOTE-mvgruxts0"
         ],
         "proposalId": "W1-r2",
         "authorisedBy": "Maya Ortiz",
@@ -707,7 +642,7 @@
       }
     },
     {
-      "seq": 47,
+      "seq": 43,
       "time": "09:34:30",
       "process": 1,
       "actor": "assistant",
@@ -725,7 +660,7 @@
       }
     },
     {
-      "seq": 48,
+      "seq": 44,
       "time": "09:34:30",
       "process": 1,
       "actor": "mastra",
@@ -733,9 +668,74 @@
       "step": "Suspended for approval of W1-r2",
       "detail": {
         "note": "requireApproval: Mastra persists the suspended run in Postgres",
-        "runId": "907777ed-723c-4905-a520-a12bd2d70fc5",
+        "runId": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
         "proposalId": "W1-r2",
-        "toolCallId": "call_4ed60afa"
+        "toolCallId": "call_5a897c8c"
+      }
+    },
+    {
+      "seq": 45,
+      "time": "09:34:30",
+      "process": 1,
+      "actor": "worker",
+      "kind": "process",
+      "step": "Run started for W2",
+      "detail": {
+        "reasons": [
+          "booking changed",
+          "booking changed"
+        ],
+        "workItemId": "W2",
+        "mastraThread": "work:W2",
+        "mastraResource": "org_1:booking:B-1042"
+      }
+    },
+    {
+      "seq": 46,
+      "time": "09:34:30",
+      "process": 1,
+      "actor": "assistant",
+      "kind": "model",
+      "step": "Tool readWorkContext",
+      "detail": {
+        "total": "£1,000.00",
+        "guests": 10,
+        "sources": [
+          "MSG-b1 (origin, external)"
+        ],
+        "workItemId": "W2",
+        "authorisation": null,
+        "bookingVersion": 3
+      }
+    },
+    {
+      "seq": 47,
+      "time": "09:34:30",
+      "process": 1,
+      "actor": "assistant",
+      "kind": "state",
+      "step": "W2 closed",
+      "detail": {
+        "outcome": "Headcount 10 is now recorded on booking v3. Nothing to send.",
+        "workItemId": "W2"
+      }
+    },
+    {
+      "seq": 48,
+      "time": "09:34:30",
+      "process": 1,
+      "actor": "assistant",
+      "kind": "model",
+      "step": "Model calls",
+      "detail": {
+        "calls": 3,
+        "steps": [
+          "readWorkContext",
+          "closeWork",
+          "text reply"
+        ],
+        "window": "7 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages)",
+        "workItemId": "W2"
       }
     },
     {
@@ -746,7 +746,7 @@
       "kind": "process",
       "step": "Process 1 exits",
       "detail": {
-        "pid": 64903,
+        "pid": 51061,
         "waiting": [
           "W1-r2"
         ]
@@ -758,9 +758,10 @@
       "process": 2,
       "actor": "worker",
       "kind": "process",
-      "step": "Process 2 started, empty memory",
+      "step": "Process 2 started",
       "detail": {
-        "pid": 64914
+        "pid": 51063,
+        "note": "a fresh process reloads the suspended run and the persisted thread state from Postgres"
       }
     },
     {
@@ -772,7 +773,7 @@
       "step": "Suspended run found in Postgres",
       "detail": {
         "runs": [
-          "907777ed-723c-4905-a520-a12bd2d70fc5"
+          "d0a17f67-7065-46f3-a2f2-f015d3528d30"
         ]
       }
     },
@@ -809,7 +810,7 @@
       "kind": "process",
       "step": "Resuming the run for W1-r2",
       "detail": {
-        "runId": "907777ed-723c-4905-a520-a12bd2d70fc5",
+        "runId": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
         "proposalId": "W1-r2",
         "proposalStatus": "approved"
       }
@@ -822,7 +823,7 @@
       "kind": "effect",
       "step": "Approval consumed",
       "detail": {
-        "runId": "907777ed-723c-4905-a520-a12bd2d70fc5",
+        "runId": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
         "actionKey": "send-reply:W1-r2",
         "approvalId": 1,
         "proposalId": "W1-r2"
@@ -912,7 +913,7 @@
         ],
         "thread": "A",
         "actionKey": "send-reply:W1-r2",
-        "providerMessageId": "pm_4fe1ac22"
+        "providerMessageId": "pm_99010301"
       }
     },
     {
@@ -934,7 +935,7 @@
       "kind": "process",
       "step": "Process 2 exits",
       "detail": {
-        "pid": 64914
+        "pid": 51063
       }
     }
   ],
@@ -981,7 +982,7 @@
       },
       {
         "work_item_id": "W1",
-        "message_id": "NOTE-mvgqg77j0",
+        "message_id": "NOTE-mvgruxts0",
         "link": "decision",
         "linked_by": "app",
         "reason": "explicit reference from the note box"
@@ -1001,7 +1002,7 @@
         "max_pct": "10",
         "scope": "up to 10% on this booking’s total, for request W1 only",
         "granted_by": "u_maya",
-        "source_message_id": "NOTE-mvgqg77j0"
+        "source_message_id": "NOTE-mvgruxts0"
       }
     ],
     "proposals": [
@@ -1024,7 +1025,7 @@
         "content_hash": "2da6223047f5b2ed",
         "status": "invalidated",
         "status_reason": "booking changed (v1 → v2)",
-        "mastra_run_id": "c426c38c-530e-477c-a2e8-ba1c85825db9"
+        "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0"
       },
       {
         "id": "W1-r2",
@@ -1045,7 +1046,7 @@
         "content_hash": "f5b0d359d51429dc",
         "status": "executed",
         "status_reason": null,
-        "mastra_run_id": "907777ed-723c-4905-a520-a12bd2d70fc5"
+        "mastra_run_id": "d0a17f67-7065-46f3-a2f2-f015d3528d30"
       }
     ],
     "approvals": [
@@ -1062,12 +1063,12 @@
         "key": "send-reply:W1-r2",
         "status": "sent",
         "attempts": 1,
-        "provider_message_id": "pm_4fe1ac22"
+        "provider_message_id": "pm_99010301"
       }
     ],
     "providerMessages": [
       {
-        "id": "pm_4fe1ac22",
+        "id": "pm_99010301",
         "idempotency_key": "send-reply:W1-r2",
         "to_addr": [
           "sarah@northfield.example"
@@ -1086,5 +1087,948 @@
       }
     ]
   },
-  "markdown": "# Scenario trace\n\nGenerated by `npm run scenario`. Times are simulated; each process is a separate OS process.\n\n| time | proc | actor | step | detail |\n|---|---|---|---|---|\n| 09:00 | setup | app | Booking B-1042 on file | total: £800.00; guests: 8; threads: [\"A: Sarah Lin\",\"B: Dev Patel, Sarah Lin\",\"N: internal notes\"]; version: 1; bookingId: B-1042 |\n| 09:00 | 1 | worker | Process 1 started | pid: 64903 |\n| 09:02 | 1 | sarah@northfield.example | Email in A | body: Hello, we are booked for the team dinner on 14 November. Would a 10% discount be possible? We have held our last three events with you.; from: sarah@northfield.example; subject: Discount for our team dinner; audience: external; conversation: A |\n| 09:02 | 1 | app | Work item opened | kind: discount; booking: B-1042; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:02 | 1 | app | Source linked as origin | reason: first message of the request; messageId: MSG-a1; workItemId: W1 |\n| 09:02 | 1 | worker | Wake-up queued now | reason: new request; workItemId: W1 |\n| 09:02 | 1 | worker | Run started for W1 | reasons: [\"new request\"]; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:02 | 1 | assistant | Tool readWorkContext | total: £800.00; guests: 8; sources: [\"MSG-a1 (origin, external)\"]; workItemId: W1; authorisation: null; bookingVersion: 1 |\n| 09:02 | 1 | assistant | W1 waiting for manager decision | note: Discount requested; no manager decision is linked yet.; workItemId: W1 |\n| 09:02 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"recordWaiting\",\"text reply\"]; window: 1 message at the first call; 1 of 1 wake-up of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:10 | 1 | dev@northfield.example | Email in B | body: Hi, quick update for the 14th: we will be 10 people, not 8. Two of them are vegetarian.; from: dev@northfield.example; subject: Headcount for 14 November; audience: external; conversation: B |\n| 09:10 | 1 | app | Work item opened | kind: participants; booking: B-1042; workItemId: W2; mastraThread: work:W2; mastraResource: org_1:booking:B-1042 |\n| 09:10 | 1 | app | Source linked as origin | reason: first message of the request; messageId: MSG-b1; workItemId: W2 |\n| 09:10 | 1 | worker | Wake-up queued now | reason: new request; workItemId: W2 |\n| 09:10 | 1 | worker | Run started for W2 | reasons: [\"new request\"]; workItemId: W2; mastraThread: work:W2; mastraResource: org_1:booking:B-1042 |\n| 09:10 | 1 | assistant | Tool readWorkContext | total: £800.00; guests: 8; sources: [\"MSG-b1 (origin, external)\"]; workItemId: W2; authorisation: null; bookingVersion: 1 |\n| 09:10 | 1 | assistant | W2 waiting for booking update | note: The thread asks for 10 guests; the booking shows 8. Staff updates the CRM.; workItemId: W2 |\n| 09:10 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"recordWaiting\",\"text reply\"]; window: 1 message at the first call; 1 of 1 wake-up of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W2 |\n| 09:25 | 1 | Maya Ortiz | Internal note | body: OK for 10%. Repeat client, and the margin on this menu covers it.; author: Maya Ortiz (manager, from session); audience: internal; decision: approve up to 10%; messageId: NOTE-mvgqg77j0; explicitReference: W1 |\n| 09:25 | 1 | app | Source linked as decision | reason: explicit reference from the note box; messageId: NOTE-mvgqg77j0; workItemId: W1 |\n| 09:25 | 1 | app | Manager authorisation recorded | scope: up to 10% on this booking’s total, for request W1 only; maxPct: 10; grantedBy: Maya Ortiz; workItemId: W1 |\n| 09:25 | 1 | worker | Wake-up queued now | reason: manager decision linked; workItemId: W1 |\n| 09:25 | 1 | worker | Run started for W1 | reasons: [\"manager decision linked\"]; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:25 | 1 | assistant | Tool readWorkContext | total: £800.00; guests: 8; sources: [\"MSG-a1 (origin, external)\",\"NOTE-mvgqg77j0 (decision, internal)\"]; workItemId: W1; authorisation: 10% by Maya Ortiz; bookingVersion: 1 |\n| 09:25 | 1 | app | Proposal W1-r1 drafted | to: [\"sarah@northfield.example\"]; hash: 2da6223047f5b2ed; total: £800.00 → £720.00; discount: 10%; evidence: [\"MSG-a1\",\"NOTE-mvgqg77j0\"]; proposalId: W1-r1; authorisedBy: Maya Ortiz; basedOnBookingVersion: 1 |\n| 09:25 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"draftProposal\",\"submitProposal\"]; window: 7 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:25 | 1 | mastra | Suspended for approval of W1-r1 | note: requireApproval: Mastra persists the suspended run in Postgres; runId: c426c38c-530e-477c-a2e8-ba1c85825db9; proposalId: W1-r1; toolCallId: call_7b3d7326 |\n| 09:31 | 1 | Tom Reid | Booking edited in the CRM | total: £800.00 → £1,000.00; guests: 8 → 10; changed: [\"guests\"]; version: 1 → 2; bookingId: B-1042; provenance: staff |\n| 09:31 | 1 | app | Proposal invalidated at once | reason: booking changed (v1 → v2); proposalId: W1-r1; workItemId: W1 |\n| 09:31 | 1 | worker | Wake-up batched | reason: booking changed; runAfter: 2026-11-02T09:33:00.000Z; workItemId: W2; groupedEvents: 1 |\n| 09:31 | 1 | worker | Wake-up batched | reason: redraft after booking change; runAfter: 2026-11-02T09:33:00.000Z; workItemId: W1; groupedEvents: 1 |\n| 09:31 | 1 | assistant | Model calls | calls: 1; steps: [\"text reply\"]; window: 13 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:31 | 1 | mastra | Suspended call for W1-r1 declined | runId: c426c38c-530e-477c-a2e8-ba1c85825db9; reason: booking changed (v1 → v2); proposalId: W1-r1 |\n| 09:32 | 1 | Tom Reid | Approval refused | reason: W1-r1 is invalidated (booking changed (v1 → v2)); proposalId: W1-r1 |\n| 09:32:30 | 1 | Tom Reid | Booking edited in the CRM | total: £1,000.00 → £1,000.00; guests: 10 → 10; changed: [\"title\"]; version: 2 → 3; bookingId: B-1042; provenance: staff |\n| 09:32:30 | 1 | worker | Wake-up pushed back, edits grouped | reason: booking changed; runAfter: 2026-11-02T09:34:30.000Z; workItemId: W2; groupedEvents: 2 |\n| 09:32:30 | 1 | worker | Wake-up pushed back, edits grouped | reason: booking changed; runAfter: 2026-11-02T09:34:30.000Z; workItemId: W1; groupedEvents: 2 |\n| 09:33 | 1 | Tom Reid | Contact phone edited in the CRM | contactId: C-77 |\n| 09:33 | 1 | worker | No wake-up: contact fields are not a dependency of any open work | contactId: C-77 |\n| 09:34:30 | 1 | worker | Run started for W2 | reasons: [\"booking changed\",\"booking changed\"]; workItemId: W2; mastraThread: work:W2; mastraResource: org_1:booking:B-1042 |\n| 09:34:30 | 1 | assistant | Tool readWorkContext | total: £1,000.00; guests: 10; sources: [\"MSG-b1 (origin, external)\"]; workItemId: W2; authorisation: null; bookingVersion: 3 |\n| 09:34:30 | 1 | assistant | W2 closed | outcome: Headcount 10 is now recorded on booking v3. Nothing to send.; workItemId: W2 |\n| 09:34:30 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"closeWork\",\"text reply\"]; window: 7 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W2 |\n| 09:34:30 | 1 | worker | Run started for W1 | reasons: [\"redraft after booking change\",\"booking changed\"]; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:34:30 | 1 | assistant | Tool readWorkContext | total: £1,000.00; guests: 10; sources: [\"MSG-a1 (origin, external)\",\"NOTE-mvgqg77j0 (decision, internal)\"]; workItemId: W1; authorisation: 10% by Maya Ortiz; bookingVersion: 3 |\n| 09:34:30 | 1 | app | Proposal W1-r2 drafted | to: [\"sarah@northfield.example\"]; hash: f5b0d359d51429dc; total: £1,000.00 → £900.00; discount: 10%; evidence: [\"MSG-a1\",\"NOTE-mvgqg77j0\"]; proposalId: W1-r2; authorisedBy: Maya Ortiz; basedOnBookingVersion: 3 |\n| 09:34:30 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"draftProposal\",\"submitProposal\"]; window: 14 messages at the first call; 2 of 3 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:34:30 | 1 | mastra | Suspended for approval of W1-r2 | note: requireApproval: Mastra persists the suspended run in Postgres; runId: 907777ed-723c-4905-a520-a12bd2d70fc5; proposalId: W1-r2; toolCallId: call_4ed60afa |\n| 09:35 | 1 | worker | Process 1 exits | pid: 64903; waiting: [\"W1-r2\"] |\n| 09:50 | 2 | worker | Process 2 started, empty memory | pid: 64914 |\n| 09:50 | 2 | mastra | Suspended run found in Postgres | runs: [\"907777ed-723c-4905-a520-a12bd2d70fc5\"] |\n| 09:51 | 2 | Tom Reid | W1-r2 approved | hash: f5b0d359d51429dc; approvalId: 1; proposalId: W1-r2 |\n| 09:51 | 2 | Tom Reid | Second click: existing approval returned | approvalId: 1; proposalId: W1-r2 |\n| 09:51 | 2 | worker | Resuming the run for W1-r2 | runId: 907777ed-723c-4905-a520-a12bd2d70fc5; proposalId: W1-r2; proposalStatus: approved |\n| 09:51 | 2 | app | Approval consumed | runId: 907777ed-723c-4905-a520-a12bd2d70fc5; actionKey: send-reply:W1-r2; approvalId: 1; proposalId: W1-r2 |\n| 09:51 | 2 | assistant | Booking updated by the assistant | total: £1,000.00 → £900.00; guests: 10 → 10; changed: [\"discountPct\"]; version: 3 → 4; actionKey: send-reply:W1-r2; bookingId: B-1042; provenance: assistant |\n| 09:51 | 2 | worker | No wake-up: change made by this work item’s own action | actionKey: send-reply:W1-r2; workItemId: W1 |\n| 09:51 | 2 | app | Intent to send recorded (same transaction) | created: true; actionKey: send-reply:W1-r2 |\n| 09:51 | 2 | assistant | Model calls | calls: 1; steps: [\"text reply\"]; window: 20 messages at the first call; 2 of 3 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:51:12 | 2 | worker-2 | Send claimed | attempt: 1; actionKey: send-reply:W1-r2 |\n| 09:51:12 | 2 | worker-2 | Email accepted by the provider | to: [\"sarah@northfield.example\"]; thread: A; actionKey: send-reply:W1-r2; providerMessageId: pm_4fe1ac22 |\n| 09:51:12 | 2 | worker | No wake-up: the sent email carries the assistant’s provenance | actionKey: send-reply:W1-r2 |\n| 10:00 | 2 | worker | Process 2 exits | pid: 64914 |\n\n## What is left in Postgres\n\n```json\n{\n  \"booking\": [\n    {\n      \"id\": \"B-1042\",\n      \"title\": \"Northfield team dinner (10 guests)\",\n      \"guests\": 10,\n      \"discount_pct\": \"10\",\n      \"total_cents\": 90000,\n      \"version\": 4,\n      \"last_change_provenance\": \"assistant\",\n      \"last_action_key\": \"send-reply:W1-r2\"\n    }\n  ],\n  \"workItems\": [\n    {\n      \"id\": \"W1\",\n      \"kind\": \"discount\",\n      \"title\": \"Discount for our team dinner\",\n      \"status\": \"done\",\n      \"waiting_for\": null,\n      \"mastra_resource\": \"org_1:booking:B-1042\",\n      \"mastra_thread\": \"work:W1\"\n    },\n    {\n      \"id\": \"W2\",\n      \"kind\": \"participants\",\n      \"title\": \"Headcount for 14 November\",\n      \"status\": \"done\",\n      \"waiting_for\": null,\n      \"mastra_resource\": \"org_1:booking:B-1042\",\n      \"mastra_thread\": \"work:W2\"\n    }\n  ],\n  \"sources\": [\n    {\n      \"work_item_id\": \"W1\",\n      \"message_id\": \"MSG-a1\",\n      \"link\": \"origin\",\n      \"linked_by\": \"app\",\n      \"reason\": \"first message of the request\"\n    },\n    {\n      \"work_item_id\": \"W1\",\n      \"message_id\": \"NOTE-mvgqg77j0\",\n      \"link\": \"decision\",\n      \"linked_by\": \"app\",\n      \"reason\": \"explicit reference from the note box\"\n    },\n    {\n      \"work_item_id\": \"W2\",\n      \"message_id\": \"MSG-b1\",\n      \"link\": \"origin\",\n      \"linked_by\": \"app\",\n      \"reason\": \"first message of the request\"\n    }\n  ],\n  \"authorisations\": [\n    {\n      \"id\": \"1\",\n      \"work_item_id\": \"W1\",\n      \"max_pct\": \"10\",\n      \"scope\": \"up to 10% on this booking’s total, for request W1 only\",\n      \"granted_by\": \"u_maya\",\n      \"source_message_id\": \"NOTE-mvgqg77j0\"\n    }\n  ],\n  \"proposals\": [\n    {\n      \"id\": \"W1-r1\",\n      \"revision\": 1,\n      \"based_on_booking_version\": 1,\n      \"effects\": {\n        \"guests\": 8,\n        \"discountPct\": 10,\n        \"authorisationId\": 1,\n        \"totalAfterCents\": 72000,\n        \"totalBeforeCents\": 80000\n      },\n      \"reply_to\": [\n        \"sarah@northfield.example\"\n      ],\n      \"reply_subject\": \"Re: Discount for our team dinner\",\n      \"reply_body\": \"Hi Sarah,\\n\\nThank you for your message about Northfield team dinner on 2026-11-14. We can offer 10% off: for 8 guests the total is now £720.00 instead of £800.00.\\n\\nAn updated confirmation follows once the change is applied.\\n\\nKind regards,\\nThe events team\",\n      \"content_hash\": \"2da6223047f5b2ed\",\n      \"status\": \"invalidated\",\n      \"status_reason\": \"booking changed (v1 → v2)\",\n      \"mastra_run_id\": \"c426c38c-530e-477c-a2e8-ba1c85825db9\"\n    },\n    {\n      \"id\": \"W1-r2\",\n      \"revision\": 2,\n      \"based_on_booking_version\": 3,\n      \"effects\": {\n        \"guests\": 10,\n        \"discountPct\": 10,\n        \"authorisationId\": 1,\n        \"totalAfterCents\": 90000,\n        \"totalBeforeCents\": 100000\n      },\n      \"reply_to\": [\n        \"sarah@northfield.example\"\n      ],\n      \"reply_subject\": \"Re: Discount for our team dinner\",\n      \"reply_body\": \"Hi Sarah,\\n\\nThank you for your message about Northfield team dinner (10 guests) on 2026-11-14. We can offer 10% off: for 10 guests the total is now £900.00 instead of £1,000.00.\\n\\nAn updated confirmation follows once the change is applied.\\n\\nKind regards,\\nThe events team\",\n      \"content_hash\": \"f5b0d359d51429dc\",\n      \"status\": \"executed\",\n      \"status_reason\": null,\n      \"mastra_run_id\": \"907777ed-723c-4905-a520-a12bd2d70fc5\"\n    }\n  ],\n  \"approvals\": [\n    {\n      \"id\": \"1\",\n      \"proposal_id\": \"W1-r2\",\n      \"content_hash\": \"f5b0d359d51429dc\",\n      \"approved_by\": \"u_tom\",\n      \"consumed_by_action\": \"send-reply:W1-r2\"\n    }\n  ],\n  \"actions\": [\n    {\n      \"key\": \"send-reply:W1-r2\",\n      \"status\": \"sent\",\n      \"attempts\": 1,\n      \"provider_message_id\": \"pm_4fe1ac22\"\n    }\n  ],\n  \"providerMessages\": [\n    {\n      \"id\": \"pm_4fe1ac22\",\n      \"idempotency_key\": \"send-reply:W1-r2\",\n      \"to_addr\": [\n        \"sarah@northfield.example\"\n      ],\n      \"subject\": \"Re: Discount for our team dinner\"\n    }\n  ],\n  \"mastraThreads\": [\n    {\n      \"id\": \"work:W1\",\n      \"resourceId\": \"org_1:booking:B-1042\"\n    },\n    {\n      \"id\": \"work:W2\",\n      \"resourceId\": \"org_1:booking:B-1042\"\n    }\n  ]\n}\n```\n"
+  "snapshots": [
+    {
+      "label": "on-file",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner",
+          "guests": 8,
+          "version": 1,
+          "total_cents": 80000,
+          "discount_pct": "0"
+        },
+        "wakeups": [],
+        "approvals": [],
+        "proposals": [],
+        "workItems": [],
+        "suspendedRuns": null,
+        "authorisations": [],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "email-a",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner",
+          "guests": 8,
+          "version": 1,
+          "total_cents": 80000,
+          "discount_pct": "0"
+        },
+        "wakeups": [],
+        "approvals": [],
+        "proposals": [],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting",
+            "waiting_for": "manager_decision",
+            "mastra_thread": "work:W1"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "email-b",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner",
+          "guests": 8,
+          "version": 1,
+          "total_cents": 80000,
+          "discount_pct": "0"
+        },
+        "wakeups": [],
+        "approvals": [],
+        "proposals": [],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting",
+            "waiting_for": "manager_decision",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "waiting",
+            "waiting_for": "booking_update",
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "note",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner",
+          "guests": 8,
+          "version": 1,
+          "total_cents": 80000,
+          "discount_pct": "0"
+        },
+        "wakeups": [
+          {
+            "urgent": true,
+            "reasons": [
+              "manager decision linked"
+            ],
+            "run_after": "2026-11-02T09:25:00.000Z",
+            "claimed_by": null,
+            "event_count": 1,
+            "work_item_id": "W1"
+          }
+        ],
+        "approvals": [],
+        "proposals": [],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting",
+            "waiting_for": "manager_decision",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "waiting",
+            "waiting_for": "booking_update",
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "r1-drafted",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner",
+          "guests": 8,
+          "version": 1,
+          "total_cents": 80000,
+          "discount_pct": "0"
+        },
+        "wakeups": [],
+        "approvals": [],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": true,
+            "status": "pending_approval",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": null,
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting_approval",
+            "waiting_for": "approval of W1-r1",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "waiting",
+            "waiting_for": "booking_update",
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [
+          {
+            "runId": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "threadId": "work:W1",
+            "proposalId": "W1-r1"
+          }
+        ],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "guests-edited",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner",
+          "guests": 10,
+          "version": 2,
+          "total_cents": 100000,
+          "discount_pct": "0"
+        },
+        "wakeups": [
+          {
+            "urgent": false,
+            "reasons": [
+              "redraft after booking change"
+            ],
+            "run_after": "2026-11-02T09:33:00.000Z",
+            "claimed_by": null,
+            "event_count": 1,
+            "work_item_id": "W1"
+          },
+          {
+            "urgent": false,
+            "reasons": [
+              "booking changed"
+            ],
+            "run_after": "2026-11-02T09:33:00.000Z",
+            "claimed_by": null,
+            "event_count": 1,
+            "work_item_id": "W2"
+          }
+        ],
+        "approvals": [],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": true,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting",
+            "waiting_for": "redraft",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "waiting",
+            "waiting_for": "booking_update",
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "late-approval",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner",
+          "guests": 10,
+          "version": 2,
+          "total_cents": 100000,
+          "discount_pct": "0"
+        },
+        "wakeups": [
+          {
+            "urgent": false,
+            "reasons": [
+              "redraft after booking change"
+            ],
+            "run_after": "2026-11-02T09:33:00.000Z",
+            "claimed_by": null,
+            "event_count": 1,
+            "work_item_id": "W1"
+          },
+          {
+            "urgent": false,
+            "reasons": [
+              "booking changed"
+            ],
+            "run_after": "2026-11-02T09:33:00.000Z",
+            "claimed_by": null,
+            "event_count": 1,
+            "work_item_id": "W2"
+          }
+        ],
+        "approvals": [],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": true,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting",
+            "waiting_for": "redraft",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "waiting",
+            "waiting_for": "booking_update",
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "title-edited",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner (10 guests)",
+          "guests": 10,
+          "version": 3,
+          "total_cents": 100000,
+          "discount_pct": "0"
+        },
+        "wakeups": [
+          {
+            "urgent": false,
+            "reasons": [
+              "redraft after booking change",
+              "booking changed"
+            ],
+            "run_after": "2026-11-02T09:34:30.000Z",
+            "claimed_by": null,
+            "event_count": 2,
+            "work_item_id": "W1"
+          },
+          {
+            "urgent": false,
+            "reasons": [
+              "booking changed",
+              "booking changed"
+            ],
+            "run_after": "2026-11-02T09:34:30.000Z",
+            "claimed_by": null,
+            "event_count": 2,
+            "work_item_id": "W2"
+          }
+        ],
+        "approvals": [],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": true,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting",
+            "waiting_for": "redraft",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "waiting",
+            "waiting_for": "booking_update",
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "woken-W1",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner (10 guests)",
+          "guests": 10,
+          "version": 3,
+          "total_cents": 100000,
+          "discount_pct": "0"
+        },
+        "wakeups": [
+          {
+            "urgent": false,
+            "reasons": [
+              "booking changed",
+              "booking changed"
+            ],
+            "run_after": "2026-11-02T09:34:30.000Z",
+            "claimed_by": null,
+            "event_count": 2,
+            "work_item_id": "W2"
+          }
+        ],
+        "approvals": [],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": false,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          },
+          {
+            "id": "W1-r2",
+            "active": true,
+            "status": "pending_approval",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 2,
+            "mastra_run_id": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "status_reason": null,
+            "total_after_cents": 90000,
+            "based_on_booking_version": 3
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting_approval",
+            "waiting_for": "approval of W1-r2",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "waiting",
+            "waiting_for": "booking_update",
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [
+          {
+            "runId": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "threadId": "work:W1",
+            "proposalId": "W1-r2"
+          }
+        ],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "woken-W2",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner (10 guests)",
+          "guests": 10,
+          "version": 3,
+          "total_cents": 100000,
+          "discount_pct": "0"
+        },
+        "wakeups": [],
+        "approvals": [],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": false,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          },
+          {
+            "id": "W1-r2",
+            "active": true,
+            "status": "pending_approval",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 2,
+            "mastra_run_id": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "status_reason": null,
+            "total_after_cents": 90000,
+            "based_on_booking_version": 3
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting_approval",
+            "waiting_for": "approval of W1-r2",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "done",
+            "waiting_for": null,
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [
+          {
+            "runId": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "threadId": "work:W1",
+            "proposalId": "W1-r2"
+          }
+        ],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "restart",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner (10 guests)",
+          "guests": 10,
+          "version": 3,
+          "total_cents": 100000,
+          "discount_pct": "0"
+        },
+        "wakeups": [],
+        "approvals": [],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": false,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          },
+          {
+            "id": "W1-r2",
+            "active": true,
+            "status": "pending_approval",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 2,
+            "mastra_run_id": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "status_reason": null,
+            "total_after_cents": 90000,
+            "based_on_booking_version": 3
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting_approval",
+            "waiting_for": "approval of W1-r2",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "done",
+            "waiting_for": null,
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [
+          {
+            "runId": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "threadId": "work:W1",
+            "proposalId": "W1-r2"
+          }
+        ],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "r2-approved",
+      "data": {
+        "actions": [],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner (10 guests)",
+          "guests": 10,
+          "version": 3,
+          "total_cents": 100000,
+          "discount_pct": "0"
+        },
+        "wakeups": [],
+        "approvals": [
+          {
+            "id": "1",
+            "approved_by": "Tom Reid",
+            "proposal_id": "W1-r2",
+            "consumed_by_action": null
+          }
+        ],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": false,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          },
+          {
+            "id": "W1-r2",
+            "active": true,
+            "status": "approved",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 2,
+            "mastra_run_id": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "status_reason": null,
+            "total_after_cents": 90000,
+            "based_on_booking_version": 3
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "waiting_approval",
+            "waiting_for": "approval of W1-r2",
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "done",
+            "waiting_for": null,
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [
+          {
+            "runId": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "threadId": "work:W1",
+            "proposalId": "W1-r2"
+          }
+        ],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "executed",
+      "data": {
+        "actions": [
+          {
+            "key": "send-reply:W1-r2",
+            "status": "pending",
+            "attempts": 0,
+            "provider_message_id": null
+          }
+        ],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner (10 guests)",
+          "guests": 10,
+          "version": 4,
+          "total_cents": 90000,
+          "discount_pct": "10"
+        },
+        "wakeups": [],
+        "approvals": [
+          {
+            "id": "1",
+            "approved_by": "Tom Reid",
+            "proposal_id": "W1-r2",
+            "consumed_by_action": "send-reply:W1-r2"
+          }
+        ],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": false,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          },
+          {
+            "id": "W1-r2",
+            "active": true,
+            "status": "executed",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 2,
+            "mastra_run_id": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "status_reason": null,
+            "total_after_cents": 90000,
+            "based_on_booking_version": 3
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "sending",
+            "waiting_for": null,
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "done",
+            "waiting_for": null,
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 0
+      }
+    },
+    {
+      "label": "sent",
+      "data": {
+        "actions": [
+          {
+            "key": "send-reply:W1-r2",
+            "status": "sent",
+            "attempts": 1,
+            "provider_message_id": "pm_99010301"
+          }
+        ],
+        "booking": {
+          "id": "B-1042",
+          "title": "Northfield team dinner (10 guests)",
+          "guests": 10,
+          "version": 4,
+          "total_cents": 90000,
+          "discount_pct": "10"
+        },
+        "wakeups": [],
+        "approvals": [
+          {
+            "id": "1",
+            "approved_by": "Tom Reid",
+            "proposal_id": "W1-r2",
+            "consumed_by_action": "send-reply:W1-r2"
+          }
+        ],
+        "proposals": [
+          {
+            "id": "W1-r1",
+            "active": false,
+            "status": "invalidated",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 1,
+            "mastra_run_id": "0e913066-7f94-47c3-af44-911c661d7ac0",
+            "status_reason": "booking changed (v1 → v2)",
+            "total_after_cents": 72000,
+            "based_on_booking_version": 1
+          },
+          {
+            "id": "W1-r2",
+            "active": true,
+            "status": "executed",
+            "reply_to": [
+              "sarah@northfield.example"
+            ],
+            "revision": 2,
+            "mastra_run_id": "d0a17f67-7065-46f3-a2f2-f015d3528d30",
+            "status_reason": null,
+            "total_after_cents": 90000,
+            "based_on_booking_version": 3
+          }
+        ],
+        "workItems": [
+          {
+            "id": "W1",
+            "kind": "discount",
+            "status": "done",
+            "waiting_for": null,
+            "mastra_thread": "work:W1"
+          },
+          {
+            "id": "W2",
+            "kind": "participants",
+            "status": "done",
+            "waiting_for": null,
+            "mastra_thread": "work:W2"
+          }
+        ],
+        "suspendedRuns": [],
+        "authorisations": [
+          {
+            "id": "1",
+            "max_pct": "10",
+            "revoked": false,
+            "granted_by": "Maya Ortiz",
+            "work_item_id": "W1"
+          }
+        ],
+        "providerMessages": 1
+      }
+    }
+  ],
+  "markdown": "# Scenario trace\n\nGenerated by `npm run scenario`. Times are simulated; each process is a separate OS process.\n\n| time | proc | actor | step | detail |\n|---|---|---|---|---|\n| 09:00 | setup | app | Booking B-1042 on file | total: £800.00; guests: 8; threads: [\"A: Sarah Lin\",\"B: Dev Patel, Sarah Lin\",\"N: internal notes\"]; version: 1; bookingId: B-1042 |\n| 09:00 | 1 | worker | Process 1 started | pid: 51061 |\n| 09:02 | 1 | sarah@northfield.example | Email in A | body: Hello, we are booked for the team dinner on 14 November. Would a 10% discount be possible? We have held our last three events with you.; from: sarah@northfield.example; subject: Discount for our team dinner; audience: external; conversation: A |\n| 09:02 | 1 | app | Work item opened | kind: discount; booking: B-1042; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:02 | 1 | app | Source linked as origin | reason: first message of the request; messageId: MSG-a1; workItemId: W1 |\n| 09:02 | 1 | worker | Wake-up queued now | reason: new request; workItemId: W1 |\n| 09:02 | 1 | worker | Run started for W1 | reasons: [\"new request\"]; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:02 | 1 | assistant | Tool readWorkContext | total: £800.00; guests: 8; sources: [\"MSG-a1 (origin, external)\"]; workItemId: W1; authorisation: null; bookingVersion: 1 |\n| 09:02 | 1 | assistant | W1 waiting for manager decision | note: Discount requested; no manager decision is linked yet.; workItemId: W1 |\n| 09:02 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"recordWaiting\",\"text reply\"]; window: 1 message at the first call; 1 of 1 wake-up of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:10 | 1 | dev@northfield.example | Email in B | body: Hi, quick update for the 14th: we will be 10 people, not 8.; from: dev@northfield.example; subject: Headcount for 14 November; audience: external; conversation: B |\n| 09:10 | 1 | app | Work item opened | kind: participants; booking: B-1042; workItemId: W2; mastraThread: work:W2; mastraResource: org_1:booking:B-1042 |\n| 09:10 | 1 | app | Source linked as origin | reason: first message of the request; messageId: MSG-b1; workItemId: W2 |\n| 09:10 | 1 | worker | Wake-up queued now | reason: new request; workItemId: W2 |\n| 09:10 | 1 | worker | Run started for W2 | reasons: [\"new request\"]; workItemId: W2; mastraThread: work:W2; mastraResource: org_1:booking:B-1042 |\n| 09:10 | 1 | assistant | Tool readWorkContext | total: £800.00; guests: 8; sources: [\"MSG-b1 (origin, external)\"]; workItemId: W2; authorisation: null; bookingVersion: 1 |\n| 09:10 | 1 | assistant | W2 waiting for booking update | note: The thread asks for 10 guests; the booking shows 8. Staff updates the CRM.; workItemId: W2 |\n| 09:10 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"recordWaiting\",\"text reply\"]; window: 1 message at the first call; 1 of 1 wake-up of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W2 |\n| 09:25 | 1 | Maya Ortiz | Internal note | body: OK for 10%. Repeat client, and the margin on this menu covers it.; author: Maya Ortiz (manager, from session); audience: internal; decision: approve up to 10%; messageId: NOTE-mvgruxts0; explicitReference: W1 |\n| 09:25 | 1 | app | Source linked as decision | reason: explicit reference from the note box; messageId: NOTE-mvgruxts0; workItemId: W1 |\n| 09:25 | 1 | app | Manager authorisation recorded | scope: up to 10% on this booking’s total, for request W1 only; maxPct: 10; grantedBy: Maya Ortiz; workItemId: W1 |\n| 09:25 | 1 | worker | Wake-up queued now | reason: manager decision linked; workItemId: W1 |\n| 09:25 | 1 | worker | Run started for W1 | reasons: [\"manager decision linked\"]; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:25 | 1 | assistant | Tool readWorkContext | total: £800.00; guests: 8; sources: [\"MSG-a1 (origin, external)\",\"NOTE-mvgruxts0 (decision, internal)\"]; workItemId: W1; authorisation: 10% by Maya Ortiz; bookingVersion: 1 |\n| 09:25 | 1 | app | Proposal W1-r1 drafted | to: [\"sarah@northfield.example\"]; hash: 2da6223047f5b2ed; total: £800.00 → £720.00; discount: 10%; evidence: [\"MSG-a1\",\"NOTE-mvgruxts0\"]; proposalId: W1-r1; authorisedBy: Maya Ortiz; basedOnBookingVersion: 1 |\n| 09:25 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"draftProposal\",\"submitProposal\"]; window: 7 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:25 | 1 | mastra | Suspended for approval of W1-r1 | note: requireApproval: Mastra persists the suspended run in Postgres; runId: 0e913066-7f94-47c3-af44-911c661d7ac0; proposalId: W1-r1; toolCallId: call_077f3ed2 |\n| 09:31 | 1 | Tom Reid | Booking edited in the CRM | total: £800.00 → £1,000.00; guests: 8 → 10; changed: [\"guests\"]; version: 1 → 2; bookingId: B-1042; provenance: staff |\n| 09:31 | 1 | app | Proposal invalidated at once | reason: booking changed (v1 → v2); proposalId: W1-r1; workItemId: W1 |\n| 09:31 | 1 | worker | Wake-up batched | reason: booking changed; runAfter: 2026-11-02T09:33:00.000Z; workItemId: W2; groupedEvents: 1 |\n| 09:31 | 1 | worker | Wake-up batched | reason: redraft after booking change; runAfter: 2026-11-02T09:33:00.000Z; workItemId: W1; groupedEvents: 1 |\n| 09:31 | 1 | assistant | Model calls | calls: 1; steps: [\"text reply\"]; window: 13 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:31 | 1 | mastra | Suspended call for W1-r1 declined | runId: 0e913066-7f94-47c3-af44-911c661d7ac0; reason: booking changed (v1 → v2); proposalId: W1-r1 |\n| 09:32 | 1 | Tom Reid | Approval refused | reason: W1-r1 is invalidated (booking changed (v1 → v2)); proposalId: W1-r1 |\n| 09:32:30 | 1 | Tom Reid | Booking edited in the CRM | total: £1,000.00 → £1,000.00; guests: 10 → 10; changed: [\"title\"]; version: 2 → 3; bookingId: B-1042; provenance: staff |\n| 09:32:30 | 1 | worker | Wake-up pushed back, edits grouped | reason: booking changed; runAfter: 2026-11-02T09:34:30.000Z; workItemId: W2; groupedEvents: 2 |\n| 09:32:30 | 1 | worker | Wake-up pushed back, edits grouped | reason: booking changed; runAfter: 2026-11-02T09:34:30.000Z; workItemId: W1; groupedEvents: 2 |\n| 09:33 | 1 | Tom Reid | Contact phone edited in the CRM | contactId: C-77 |\n| 09:33 | 1 | worker | No wake-up: contact fields are not a dependency of any open work | contactId: C-77 |\n| 09:34:30 | 1 | worker | Run started for W1 | reasons: [\"redraft after booking change\",\"booking changed\"]; workItemId: W1; mastraThread: work:W1; mastraResource: org_1:booking:B-1042 |\n| 09:34:30 | 1 | assistant | Tool readWorkContext | total: £1,000.00; guests: 10; sources: [\"MSG-a1 (origin, external)\",\"NOTE-mvgruxts0 (decision, internal)\"]; workItemId: W1; authorisation: 10% by Maya Ortiz; bookingVersion: 3 |\n| 09:34:30 | 1 | app | Proposal W1-r2 drafted | to: [\"sarah@northfield.example\"]; hash: f5b0d359d51429dc; total: £1,000.00 → £900.00; discount: 10%; evidence: [\"MSG-a1\",\"NOTE-mvgruxts0\"]; proposalId: W1-r2; authorisedBy: Maya Ortiz; basedOnBookingVersion: 3 |\n| 09:34:30 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"draftProposal\",\"submitProposal\"]; window: 14 messages at the first call; 2 of 3 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:34:30 | 1 | mastra | Suspended for approval of W1-r2 | note: requireApproval: Mastra persists the suspended run in Postgres; runId: d0a17f67-7065-46f3-a2f2-f015d3528d30; proposalId: W1-r2; toolCallId: call_5a897c8c |\n| 09:34:30 | 1 | worker | Run started for W2 | reasons: [\"booking changed\",\"booking changed\"]; workItemId: W2; mastraThread: work:W2; mastraResource: org_1:booking:B-1042 |\n| 09:34:30 | 1 | assistant | Tool readWorkContext | total: £1,000.00; guests: 10; sources: [\"MSG-b1 (origin, external)\"]; workItemId: W2; authorisation: null; bookingVersion: 3 |\n| 09:34:30 | 1 | assistant | W2 closed | outcome: Headcount 10 is now recorded on booking v3. Nothing to send.; workItemId: W2 |\n| 09:34:30 | 1 | assistant | Model calls | calls: 3; steps: [\"readWorkContext\",\"closeWork\",\"text reply\"]; window: 7 messages at the first call; 2 of 2 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W2 |\n| 09:35 | 1 | worker | Process 1 exits | pid: 51061; waiting: [\"W1-r2\"] |\n| 09:50 | 2 | worker | Process 2 started | pid: 51063; note: a fresh process reloads the suspended run and the persisted thread state from Postgres |\n| 09:50 | 2 | mastra | Suspended run found in Postgres | runs: [\"d0a17f67-7065-46f3-a2f2-f015d3528d30\"] |\n| 09:51 | 2 | Tom Reid | W1-r2 approved | hash: f5b0d359d51429dc; approvalId: 1; proposalId: W1-r2 |\n| 09:51 | 2 | Tom Reid | Second click: existing approval returned | approvalId: 1; proposalId: W1-r2 |\n| 09:51 | 2 | worker | Resuming the run for W1-r2 | runId: d0a17f67-7065-46f3-a2f2-f015d3528d30; proposalId: W1-r2; proposalStatus: approved |\n| 09:51 | 2 | app | Approval consumed | runId: d0a17f67-7065-46f3-a2f2-f015d3528d30; actionKey: send-reply:W1-r2; approvalId: 1; proposalId: W1-r2 |\n| 09:51 | 2 | assistant | Booking updated by the assistant | total: £1,000.00 → £900.00; guests: 10 → 10; changed: [\"discountPct\"]; version: 3 → 4; actionKey: send-reply:W1-r2; bookingId: B-1042; provenance: assistant |\n| 09:51 | 2 | worker | No wake-up: change made by this work item’s own action | actionKey: send-reply:W1-r2; workItemId: W1 |\n| 09:51 | 2 | app | Intent to send recorded (same transaction) | created: true; actionKey: send-reply:W1-r2 |\n| 09:51 | 2 | assistant | Model calls | calls: 1; steps: [\"text reply\"]; window: 20 messages at the first call; 2 of 3 wake-ups of this thread still visible (memory recalls the last 4 stored messages; tool calls and their results reach the prompt as separate messages); workItemId: W1 |\n| 09:51:12 | 2 | worker-2 | Send claimed | attempt: 1; actionKey: send-reply:W1-r2 |\n| 09:51:12 | 2 | worker-2 | Email accepted by the provider | to: [\"sarah@northfield.example\"]; thread: A; actionKey: send-reply:W1-r2; providerMessageId: pm_99010301 |\n| 09:51:12 | 2 | worker | No wake-up: the sent email carries the assistant’s provenance | actionKey: send-reply:W1-r2 |\n| 10:00 | 2 | worker | Process 2 exits | pid: 51063 |\n\n## What is left in Postgres\n\n```json\n{\n  \"booking\": [\n    {\n      \"id\": \"B-1042\",\n      \"title\": \"Northfield team dinner (10 guests)\",\n      \"guests\": 10,\n      \"discount_pct\": \"10\",\n      \"total_cents\": 90000,\n      \"version\": 4,\n      \"last_change_provenance\": \"assistant\",\n      \"last_action_key\": \"send-reply:W1-r2\"\n    }\n  ],\n  \"workItems\": [\n    {\n      \"id\": \"W1\",\n      \"kind\": \"discount\",\n      \"title\": \"Discount for our team dinner\",\n      \"status\": \"done\",\n      \"waiting_for\": null,\n      \"mastra_resource\": \"org_1:booking:B-1042\",\n      \"mastra_thread\": \"work:W1\"\n    },\n    {\n      \"id\": \"W2\",\n      \"kind\": \"participants\",\n      \"title\": \"Headcount for 14 November\",\n      \"status\": \"done\",\n      \"waiting_for\": null,\n      \"mastra_resource\": \"org_1:booking:B-1042\",\n      \"mastra_thread\": \"work:W2\"\n    }\n  ],\n  \"sources\": [\n    {\n      \"work_item_id\": \"W1\",\n      \"message_id\": \"MSG-a1\",\n      \"link\": \"origin\",\n      \"linked_by\": \"app\",\n      \"reason\": \"first message of the request\"\n    },\n    {\n      \"work_item_id\": \"W1\",\n      \"message_id\": \"NOTE-mvgruxts0\",\n      \"link\": \"decision\",\n      \"linked_by\": \"app\",\n      \"reason\": \"explicit reference from the note box\"\n    },\n    {\n      \"work_item_id\": \"W2\",\n      \"message_id\": \"MSG-b1\",\n      \"link\": \"origin\",\n      \"linked_by\": \"app\",\n      \"reason\": \"first message of the request\"\n    }\n  ],\n  \"authorisations\": [\n    {\n      \"id\": \"1\",\n      \"work_item_id\": \"W1\",\n      \"max_pct\": \"10\",\n      \"scope\": \"up to 10% on this booking’s total, for request W1 only\",\n      \"granted_by\": \"u_maya\",\n      \"source_message_id\": \"NOTE-mvgruxts0\"\n    }\n  ],\n  \"proposals\": [\n    {\n      \"id\": \"W1-r1\",\n      \"revision\": 1,\n      \"based_on_booking_version\": 1,\n      \"effects\": {\n        \"guests\": 8,\n        \"discountPct\": 10,\n        \"authorisationId\": 1,\n        \"totalAfterCents\": 72000,\n        \"totalBeforeCents\": 80000\n      },\n      \"reply_to\": [\n        \"sarah@northfield.example\"\n      ],\n      \"reply_subject\": \"Re: Discount for our team dinner\",\n      \"reply_body\": \"Hi Sarah,\\n\\nThank you for your message about Northfield team dinner on 2026-11-14. We can offer 10% off: for 8 guests the total is now £720.00 instead of £800.00.\\n\\nAn updated confirmation follows once the change is applied.\\n\\nKind regards,\\nThe events team\",\n      \"content_hash\": \"2da6223047f5b2ed\",\n      \"status\": \"invalidated\",\n      \"status_reason\": \"booking changed (v1 → v2)\",\n      \"mastra_run_id\": \"0e913066-7f94-47c3-af44-911c661d7ac0\"\n    },\n    {\n      \"id\": \"W1-r2\",\n      \"revision\": 2,\n      \"based_on_booking_version\": 3,\n      \"effects\": {\n        \"guests\": 10,\n        \"discountPct\": 10,\n        \"authorisationId\": 1,\n        \"totalAfterCents\": 90000,\n        \"totalBeforeCents\": 100000\n      },\n      \"reply_to\": [\n        \"sarah@northfield.example\"\n      ],\n      \"reply_subject\": \"Re: Discount for our team dinner\",\n      \"reply_body\": \"Hi Sarah,\\n\\nThank you for your message about Northfield team dinner (10 guests) on 2026-11-14. We can offer 10% off: for 10 guests the total is now £900.00 instead of £1,000.00.\\n\\nAn updated confirmation follows once the change is applied.\\n\\nKind regards,\\nThe events team\",\n      \"content_hash\": \"f5b0d359d51429dc\",\n      \"status\": \"executed\",\n      \"status_reason\": null,\n      \"mastra_run_id\": \"d0a17f67-7065-46f3-a2f2-f015d3528d30\"\n    }\n  ],\n  \"approvals\": [\n    {\n      \"id\": \"1\",\n      \"proposal_id\": \"W1-r2\",\n      \"content_hash\": \"f5b0d359d51429dc\",\n      \"approved_by\": \"u_tom\",\n      \"consumed_by_action\": \"send-reply:W1-r2\"\n    }\n  ],\n  \"actions\": [\n    {\n      \"key\": \"send-reply:W1-r2\",\n      \"status\": \"sent\",\n      \"attempts\": 1,\n      \"provider_message_id\": \"pm_99010301\"\n    }\n  ],\n  \"providerMessages\": [\n    {\n      \"id\": \"pm_99010301\",\n      \"idempotency_key\": \"send-reply:W1-r2\",\n      \"to_addr\": [\n        \"sarah@northfield.example\"\n      ],\n      \"subject\": \"Re: Discount for our team dinner\"\n    }\n  ],\n  \"mastraThreads\": [\n    {\n      \"id\": \"work:W1\",\n      \"resourceId\": \"org_1:booking:B-1042\"\n    },\n    {\n      \"id\": \"work:W2\",\n      \"resourceId\": \"org_1:booking:B-1042\"\n    }\n  ]\n}\n```\n"
 }

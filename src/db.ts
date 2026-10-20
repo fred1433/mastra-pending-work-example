@@ -15,18 +15,25 @@ export function connect(): Db {
   return new pg.Pool({ connectionString: DATABASE_URL, max: 10 })
 }
 
-export async function tx<T>(db: Db, fn: (c: Tx) => Promise<T>): Promise<T> {
-  const c = await db.connect()
-  try {
-    await c.query('begin')
-    const out = await fn(c)
-    await c.query('commit')
-    return out
-  } catch (e) {
-    await c.query('rollback').catch(() => {})
-    throw e
-  } finally {
-    c.release()
+/**
+ * One transaction. Deadlocks (40P01) and serialisation failures (40001) are retried a bounded number of
+ * times; the lock order (booking first) makes deadlocks unexpected, this is the safety net.
+ */
+export async function tx<T>(db: Db, fn: (c: Tx) => Promise<T>, attempts = 3): Promise<T> {
+  for (let i = 1; ; i++) {
+    const c = await db.connect()
+    try {
+      await c.query('begin')
+      const out = await fn(c)
+      await c.query('commit')
+      return out
+    } catch (e: any) {
+      await c.query('rollback').catch(() => {})
+      if (i < attempts && (e?.code === '40P01' || e?.code === '40001')) continue
+      throw e
+    } finally {
+      c.release()
+    }
   }
 }
 

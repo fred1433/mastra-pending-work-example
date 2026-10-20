@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { freshWorld, discountPending, at, one, count } from './helpers.ts'
 import { staffEditsBooking } from '../src/ingest.ts'
 import { approveProposal, draftProposal, executeProposal } from '../src/proposals.ts'
+import { buildAssistant } from '../src/agent/assistant.ts'
 import { runDue, withdrawInvalidated, resumeProposalRun, wakeWork } from '../src/worker.ts'
 
 test('stale: an invalidated proposal cannot be approved, and the redraft waits for its own approval', async () => {
@@ -89,7 +90,9 @@ test('beforeApproval: a draft that is already stale is never shown to a person',
     const d: any = await draftProposal(db, { workItemId: 'W1', discountPct: 10, to: ['sarah@northfield.example'], subject: 'Re: Discount for our team dinner', body: 'Hi Sarah, for 8 guests the total is now £720.00 instead of £800.00.' }, at(26))
     assert.equal(d.status, 'drafted')
     await staffEditsBooking(db, { bookingId: 'B-1042', staffId: 'u_tom', patch: { guests: 9 }, at: at(27) })
-    const out: any = await wakeWork(db, a, 'W1', ['test'], at(27), ` submit="${d.proposalId}"`)
+    // A model that submits this draft straight away, to reach the hook with a stale proposal.
+    const submitter = buildAssistant(db, { decide: (prompt: any[]) => prompt[prompt.length - 1].role === 'user' ? { tool: 'submitProposal', input: { proposalId: d.proposalId } } : { text: 'done' } })
+    const out: any = await wakeWork(db, submitter, 'W1', ['test'], at(27)).finally(() => submitter.close())
     assert.notEqual(out.finishReason, 'suspended')
     assert.equal(await count(db, 'app.trace', `step = 'beforeApproval: not shown to a person'`), 1)
     assert.equal((await one(db, 'select mastra_run_id from app.proposals where id = $1', [d.proposalId])).mastra_run_id, null)

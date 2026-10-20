@@ -40,6 +40,10 @@ export function buildTools(db: Db) {
       const latest = await one(db, 'select id, status, status_reason from app.proposals where work_item_id = $1 order by revision desc limit 1', [w.id])
       // Other open work on the same booking: visible as facts, not merged into this thread.
       const siblings = await many(db, `select id, kind, title, status from app.work_items where booking_id = $1 and id <> $2 and status <> 'done'`, [w.booking_id, w.id])
+      // Record what the model is about to write from; draftProposal checks the draft against this read.
+      const authRow = await one(db, `select id from app.discount_authorizations where work_item_id = $1 and not revoked order by id desc limit 1`, [w.id])
+      const read = await one(db, `insert into app.context_reads (work_item_id, booking_version, authorisation_id, at) values ($1,$2,$3,$4) returning id`,
+        [w.id, b.version, authRow?.id ?? null, s.at])
       await trace(db, s.at, 'assistant', 'model', 'Tool readWorkContext', {
         workItemId: w.id, bookingVersion: b.version, guests: b.guests, total: money(b.total_cents),
         sources: sources.map(x => `${x.id} (${x.link}, ${x.audience})`), authorisation: auth ? `${auth.max_pct}% by ${auth.name}` : null,
@@ -51,6 +55,7 @@ export function buildTools(db: Db) {
         origin: origin ? { conversation: origin.conversation, subject: origin.subject, participants } : null,
         authorisation: auth ? { maxPct: Number(auth.max_pct), scope: auth.scope, by: auth.name } : null,
         latestProposal: latest ?? null,
+        readId: Number(read.id),
         otherOpenWork: siblings,
       }
     },
@@ -98,11 +103,16 @@ export function buildTools(db: Db) {
     description: 'Ask a person to approve a drafted proposal. Runs only after approval.',
     inputSchema: z.object({ proposalId: z.string() }),
     requireApproval: true,
+    // A hook that throws lets the call through to the approval gate (1.78.0), so the whole hook is wrapped:
+    // if validation cannot run, the call is refused, not shown.
     beforeApproval: async (input, ctx) => {
-      let s: { workItemId: string; at: Date; runId?: string }
-      try { s = scope(ctx) } catch { return { proceed: false as const, output: { status: 'rejected_before_approval', reason: 'no worker scope', proposalId: input.proposalId } } }
-      const reason = await checkBeforeApproval(db, input.proposalId, s.workItemId, s.at)
-      if (reason) return { proceed: false as const, output: { status: 'rejected_before_approval', reason, proposalId: input.proposalId } }
+      try {
+        const s = scope(ctx)
+        const reason = await checkBeforeApproval(db, input.proposalId, s.workItemId, s.at)
+        if (reason) return { proceed: false as const, output: { status: 'rejected_before_approval', reason, proposalId: input.proposalId } }
+      } catch (e: any) {
+        return { proceed: false as const, output: { status: 'rejected_before_approval', reason: `validation could not run: ${String(e?.message).slice(0, 120)}`, proposalId: input.proposalId } }
+      }
     },
     execute: async (input, ctx) => {
       const s = scope(ctx)

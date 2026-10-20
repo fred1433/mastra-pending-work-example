@@ -1,0 +1,109 @@
+# The review's counter-examples, run against the code before the fixes (commit 8c8878f plus test pauses only).
+# 20 of 21 fail; the atomicity test already passed. After the fixes all pass: see test-run.txt.
+
+✖ authorisation: a later 5% decision stops an approved 10% proposal, without consuming the approval (591.051125ms)
+✖ authorisation: a decline arriving during execution waits for the booking lock (839.135208ms)
+✖ durability: a wake-up claimed by a process that dies is processed by the next one (2014.082458ms)
+✖ durability: a deadline claimed by a process that dies is processed by the next one (1749.769125ms)
+✖ durability: a crash between Mastra suspending and the app linking the run is reconciled (2429.00875ms)
+✖ revision: an approved revision cannot run once a newer revision exists (417.008625ms)
+✖ read: a draft written from a read the booking has since moved past is refused (89.909708ms)
+✖ permission: a manager from another organisation cannot authorise (48.852333ms)
+✖ permission: a manager from another organisation cannot approve (341.165667ms)
+✖ permission: execute() rechecks the approver, not only the approval row (407.853708ms)
+✖ locks: a CRM edit during execution does not deadlock; both complete in order (1356.533625ms)
+✖ intake, two messages at once in one thread converge on one work item (268.747959ms)
+✖ intake, an explicitly separate request in the same thread opens its own work item (48.236542ms)
+✖ audience: a subject line repeating an internal note is rejected (320.10125ms)
+✖ approval: clicking approve again after an invalidation reports the invalidation (339.0095ms)
+✖ wake: an urgent wake-up stays urgent when an ordinary edit follows (67.86325ms)
+✖ work state: a refusal in execute() puts the work item back to waiting, never stuck on an old approval (408.981375ms)
+✖ wake: a redraft made at once inside a resumed run leaves no phantom wake-up behind (476.195416ms)
+✖ outbox: an acknowledgement from a superseded attempt is refused, even with the same worker id (514.920417ms)
+✔ atomicity: a failure while recording the send rolls back the approval and the booking change (366.625917ms)
+✖ beforeApproval: an error while validating refuses the call instead of letting it reach a person (413.362083ms)
+ℹ tests 21
+ℹ pass 1
+ℹ fail 20
+
+## Why each one failed
+✖ authorisation: a later 5% decision stops an approved 10% proposal, without consuming the approval (591.051125ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+    actual: 'executed',
+    expected: 'executed',
+✖ authorisation: a decline arriving during execution waits for the booking lock (839.135208ms)
+  AssertionError [ERR_ASSERTION]: the decline must not commit while execution holds its checks
+    actual: true,
+    expected: false,
+✖ durability: a wake-up claimed by a process that dies is processed by the next one (2014.082458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: null,
+    expected: 'manager_decision',
+✖ durability: a deadline claimed by a process that dies is processed by the next one (1749.769125ms)
+  AssertionError [ERR_ASSERTION]: the deadline still produced a run
+    actual: 1,
+    expected: 2,
+✖ durability: a crash between Mastra suspending and the app linking the run is reconciled (2429.00875ms)
+  AssertionError [ERR_ASSERTION]: linked, not redrafted
+    actual: [ [ 'W1-r1', 'draft' ] ],
+    expected: [ [ 'W1-r1', 'pending_approval' ] ],
+✖ revision: an approved revision cannot run once a newer revision exists (417.008625ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+    actual: 'executed',
+    expected: 'executed',
+✖ read: a draft written from a read the booking has since moved past is refused (89.909708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: 'drafted',
+    expected: 'rejected',
+✖ permission: a manager from another organisation cannot authorise (48.852333ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+    actual: undefined,
+    expected: /organisation/,
+✖ permission: a manager from another organisation cannot approve (341.165667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: 'approved',
+    expected: 'refused',
+✖ permission: execute() rechecks the approver, not only the approval row (407.853708ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+    actual: 'executed',
+    expected: 'executed',
+✖ locks: a CRM edit during execution does not deadlock; both complete in order (1356.533625ms)
+  AssertionError [ERR_ASSERTION]: error: deadlock detected
+    actual: 'rejected',
+    expected: 'fulfilled',
+✖ intake, two messages at once in one thread converge on one work item (268.747959ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: 2,
+    expected: 1,
+✖ intake, an explicitly separate request in the same thread opens its own work item (48.236542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: 1,
+    expected: 2,
+✖ audience: a subject line repeating an internal note is rejected (320.10125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: 'drafted',
+    expected: 'rejected',
+✖ approval: clicking approve again after an invalidation reports the invalidation (339.0095ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: 'already_approved',
+    expected: 'refused',
+✖ wake: an urgent wake-up stays urgent when an ordinary edit follows (67.86325ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+    actual: [],
+    expected: [ 'W1' ],
+✖ work state: a refusal in execute() puts the work item back to waiting, never stuck on an old approval (408.981375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+    actual: [ 'waiting_approval', 'approval of W1-r1' ],
+    expected: [ 'waiting', 'manager_decision' ],
+✖ wake: a redraft made at once inside a resumed run leaves no phantom wake-up behind (476.195416ms)
+  AssertionError [ERR_ASSERTION]: W1-r2 already waits; nothing to redraft
+    actual: [ 'W1' ],
+    expected: [],
+✖ outbox: an acknowledgement from a superseded attempt is refused, even with the same worker id (514.920417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    actual: 'sent',
+    expected: 'lost_lease',
+✖ beforeApproval: an error while validating refuses the call instead of letting it reach a person (413.362083ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+    actual: 'suspended',
+    expected: 'suspended',

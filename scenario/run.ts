@@ -4,12 +4,14 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { connect, resetDatabase } from '../src/db.ts'
 import { seed } from '../src/seed.ts'
+import { snapshot } from '../src/snapshot.ts'
 import { exportTrace } from './export.ts'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const db = connect()
 await resetDatabase(db)
 await seed(db)
+await snapshot(db, 'on-file', new Date('2026-11-02T09:00:00Z'))
 for (const phase of ['1', '2']) {
   const r = spawnSync(process.execPath, ['--import', 'tsx', path.join(here, 'phase.ts'), phase], { stdio: ['ignore', 'inherit', 'inherit'], env: process.env })
   if (r.status !== 0) { console.error(`phase ${phase} failed with ${r.status}`); process.exit(1) }

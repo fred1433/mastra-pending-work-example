@@ -18,14 +18,14 @@ function runScenario(tz?: string) {
 }
 
 let baseline: any
+const base = () => (baseline ??= runScenario())
 
 test('scenario: two threads, one decision, a booking change, a redraft, a restart, one email', () => {
-  const t = runScenario()
-  baseline = t
+  const t = base()
   const steps: string[] = t.steps.map((s: any) => s.step)
   const order = ['Email in A', 'Email in B', 'Internal note', 'Manager authorisation recorded', 'Proposal W1-r1 drafted', 'Suspended for approval of W1-r1',
     'Booking edited in the CRM', 'Proposal invalidated at once', 'Approval refused', 'Wake-up pushed back, edits grouped', 'Proposal W1-r2 drafted',
-    'Process 1 exits', 'Process 2 started, empty memory', 'Suspended run found in Postgres', 'W1-r2 approved', 'Second click: existing approval returned',
+    'Process 1 exits', 'Process 2 started', 'Suspended run found in Postgres', 'W1-r2 approved', 'Second click: existing approval returned',
     'Approval consumed', 'Intent to send recorded (same transaction)', 'Email accepted by the provider']
   let i = -1
   for (const s of order) { const j = steps.indexOf(s, i + 1); assert.ok(j > i, `missing or out of order: ${s}`); i = j }
@@ -41,6 +41,7 @@ test('scenario: two threads, one decision, a booking change, a redraft, a restar
   assert.deepEqual(st.mastraThreads.map((x: any) => [x.id, x.resourceId]), [['work:W1', 'org_1:booking:B-1042'], ['work:W2', 'org_1:booking:B-1042']])
   const procs = new Set(t.steps.filter((s: any) => s.kind === 'process' && /Process \d (started|exits)/.test(s.step)).map((s: any) => s.detail.pid))
   assert.equal(procs.size, 2, 'two OS processes')
+  assert.equal(t.snapshots.length, 14, 'one SQL snapshot per step')
 })
 
 for (const tz of ['Asia/Dubai', 'America/Los_Angeles']) {
@@ -48,6 +49,6 @@ for (const tz of ['Asia/Dubai', 'America/Los_Angeles']) {
     const t = runScenario(tz)
     const r2 = t.state.proposals.find((p: any) => p.id === 'W1-r2')
     assert.match(r2.reply_body, /on 2026-11-14\./)
-    assert.equal(r2.content_hash, baseline.state.proposals.find((p: any) => p.id === 'W1-r2').content_hash)
+    assert.equal(r2.content_hash, base().state.proposals.find((p: any) => p.id === 'W1-r2').content_hash)
   })
 }

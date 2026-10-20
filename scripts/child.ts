@@ -22,6 +22,23 @@ if (cmd === 'suspend-w1') {
   print({ pid: process.pid, proposal: p })
 }
 
+if (cmd === 'claim-then-die') {
+  const { claimDue } = await import('../src/wake.ts')
+  const claimed = await claimDue(db, new Date(args[0]))
+  console.log(JSON.stringify({ pid: process.pid, claimed }))
+  process.kill(process.pid, 'SIGKILL')
+}
+
+if (cmd === 'suspend-crash-before-link') {
+  const a = buildAssistant(db)
+  await receiveEmail(db, { conversationId: 'A', externalId: 'a1', from: 'sarah@northfield.example', at: at(2), body: 'Would a 10% discount be possible for the team dinner on 14 November?' })
+  await runDue(db, a, at(2))
+  await addInternalNote(db, { bookingId: 'B-1042', staffId: 'u_maya', refWorkItemId: 'W1', decision: { approve: true, maxPct: 10 }, body: 'OK for 10%.', at: at(25) })
+  process.env.CRASH_BEFORE_LINK = '1'
+  await runDue(db, a, at(25))
+  print({ pid: process.pid, survived: true })
+}
+
 if (cmd === 'approve-resume') {
   const a = buildAssistant(db)
   const [proposalId, iso] = args

@@ -11,6 +11,7 @@ export type DispatchOptions = {
   providerIdempotency?: boolean
   /** Test hook: kill this process right after the provider accepted, before the local acknowledgement. */
   crashAfterAccept?: boolean
+  pause?: import('./hooks.ts').Pause
 }
 
 export async function dispatchOne(db: Db, o: DispatchOptions) {
@@ -33,11 +34,12 @@ export async function dispatchOne(db: Db, o: DispatchOptions) {
 
   const sent = await providerSend(db, { clientRef: a.key, idempotencyKey: idem ? a.key : null, to: a.payload.to, subject: a.payload.subject, body: a.payload.body })
   if (o.crashAfterAccept) process.kill(process.pid, 'SIGKILL')
+  await o.pause?.('after-send')
 
   return tx(db, async c => {
     const done = await one(c,
       `update app.actions set status = 'sent', provider_message_id = $3, updated_at = $4
-       where key = $1 and claimed_by = $2 and status = 'claimed' returning *`, [a.key, o.workerId, sent.providerMessageId, o.at])
+       where key = $1 and claimed_by = $2 and attempts = $5 and status = 'claimed' returning *`, [a.key, o.workerId, sent.providerMessageId, o.at, a.attempts])
     if (!done) return { outcome: 'lost_lease' as const, key: a.key }
     const p = await one(c, 'select * from app.proposals where id = $1', [a.proposal_id])
     const conv = await one(c,

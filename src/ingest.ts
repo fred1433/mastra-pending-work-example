@@ -4,16 +4,22 @@ import type { Db, Tx } from './db.ts'
 import { tx, one, many } from './db.ts'
 import { trace } from './trace.ts'
 import { wakeNow } from './wake.ts'
-import { changeBooking, type BookingPatch } from './bookings.ts'
+import { changeBooking, lockBooking, staffInOrg, type BookingPatch } from './bookings.ts'
 import { classifyRequest } from './intake.ts'
+import type { Pause } from './hooks.ts'
 
 let seq = 0
 const nextId = (p: string) => `${p}-${Date.now().toString(36)}${(seq++).toString(36)}`
 
-/** Inbound email. The sender comes from the mail headers, not from what the text claims. */
-export async function receiveEmail(db: Db, m: { conversationId: string; externalId: string; from: string; body: string; at: Date }) {
+/**
+ * Inbound email. The sender comes from the mail headers, not from what the text claims.
+ * Find-or-create is atomic: the conversation row is locked first, and a unique index allows one open work
+ * item per (conversation, request key). `requestKey` is set when intake or staff mark a separate request.
+ */
+export async function receiveEmail(db: Db, m: { conversationId: string; externalId: string; from: string; body: string; at: Date; requestKey?: string; pause?: Pause }) {
+  const requestKey = m.requestKey ?? 'main'
   return tx(db, async c => {
-    const conv = await one(c, 'select * from app.conversations where id = $1', [m.conversationId])
+    const conv = await one(c, 'select * from app.conversations where id = $1 for update', [m.conversationId])
     const ins = await c.query(
       `insert into app.messages (id, conversation_id, external_id, author_kind, author_ref, body, at)
        values ($1,$2,$3,'customer',$4,$5,$6) on conflict (external_id) do nothing returning id`,
@@ -29,9 +35,8 @@ export async function receiveEmail(db: Db, m: { conversationId: string; external
     await trace(c, m.at, m.from, 'input', `Email in ${conv.id}`, { conversation: conv.id, subject: conv.subject, from: m.from, body: m.body, audience: conv.audience })
 
     const existing = await one(c,
-      `select w.* from app.work_items w join app.work_sources s on s.work_item_id = w.id
-       join app.messages msg on msg.id = s.message_id
-       where msg.conversation_id = $1 and s.link = 'origin' and w.status <> 'done' limit 1`, [conv.id])
+      `select * from app.work_items where origin_conversation_id = $1 and request_key = $2 and status <> 'done'`, [conv.id, requestKey])
+    await m.pause?.('after-lookup')
     if (existing) {
       await linkSource(c, existing.id, messageId, 'evidence', 'app', 'same email thread as the request', m.at)
       await wakeNow(c, existing.id, 'new message on the request thread', m.at)
@@ -41,9 +46,9 @@ export async function receiveEmail(db: Db, m: { conversationId: string; external
     // A sequence, not count(*)+1: two emails arriving together must not compete for the same id.
     const workItemId: string = (await one(c, `select 'W' || nextval('app.work_item_seq') as id`)).id
     await c.query(
-      `insert into app.work_items (id, org_id, booking_id, kind, title, status, mastra_resource, mastra_thread, created_at, updated_at)
-       values ($1,$2,$3,$4,$5,'open',$6,$7,$8,$8)`,
-      [workItemId, conv.org_id, conv.booking_id, kind, conv.subject, `${conv.org_id}:booking:${conv.booking_id}`, `work:${workItemId}`, m.at])
+      `insert into app.work_items (id, org_id, booking_id, kind, title, status, mastra_resource, mastra_thread, origin_conversation_id, request_key, created_at, updated_at)
+       values ($1,$2,$3,$4,$5,'open',$6,$7,$8,$9,$10,$10)`,
+      [workItemId, conv.org_id, conv.booking_id, kind, conv.subject, `${conv.org_id}:booking:${conv.booking_id}`, `work:${workItemId}`, conv.id, requestKey, m.at])
     await trace(c, m.at, 'app', 'state', 'Work item opened', {
       workItemId, kind, booking: conv.booking_id,
       mastraResource: `${conv.org_id}:booking:${conv.booking_id}`, mastraThread: `work:${workItemId}`,
@@ -79,8 +84,8 @@ export type NoteDecision = { approve: boolean; maxPct?: number }
  */
 export async function addInternalNote(db: Db, n: { bookingId: string; staffId: string; body: string; refWorkItemId?: string; decision?: NoteDecision; at: Date }) {
   return tx(db, async c => {
-    const staff = await one(c, 'select * from app.staff where id = $1', [n.staffId])
-    if (!staff) throw new Error('unknown staff session')
+    const b = await lockBooking(c, n.bookingId)
+    const staff = await staffInOrg(c, n.staffId, b.org_id)
     const conv = await one(c, `select * from app.conversations where booking_id = $1 and channel = 'note'`, [n.bookingId])
     const messageId = nextId('NOTE')
     await c.query(`insert into app.messages (id, conversation_id, author_kind, author_ref, body, at) values ($1,$2,'staff',$3,$4,$5)`,
@@ -101,7 +106,24 @@ function validPct(d: NoteDecision) {
   return d.maxPct
 }
 
+/**
+ * A new decision replaces the previous one: earlier authorisations are revoked and every proposal built on
+ * them is invalidated, in the caller's transaction (which holds the booking lock).
+ */
+async function replaceDecision(c: Tx, w: any, at: Date, waitingFor: string) {
+  const revoked = await c.query(`update app.discount_authorizations set revoked = true where work_item_id = $1 and not revoked`, [w.id])
+  const inv = await many(c,
+    `update app.proposals set status = 'invalidated', status_reason = 'manager decision changed', updated_at = $2
+     where work_item_id = $1 and status in ('draft','pending_approval','approved') returning id`, [w.id, at])
+  for (const p of inv) await trace(c, at, 'app', 'refusal', 'Proposal invalidated at once', { proposalId: p.id, workItemId: w.id, reason: 'manager decision changed' })
+  if (inv.length || waitingFor === 'manager_decision') {
+    await c.query(`update app.work_items set status = 'waiting', waiting_for = $2, updated_at = $3 where id = $1`, [w.id, waitingFor, at])
+  }
+  return revoked.rowCount ?? 0
+}
+
 async function authorise(c: Tx, w: any, pct: number, grantedBy: any, messageId: string, at: Date) {
+  await replaceDecision(c, w, at, 'redraft')
   const scope = `up to ${pct}% on this booking’s total, for request ${w.id} only`
   const a = await one(c,
     `insert into app.discount_authorizations (work_item_id, booking_id, max_pct, scope, granted_by, source_message_id, at)
@@ -112,10 +134,10 @@ async function authorise(c: Tx, w: any, pct: number, grantedBy: any, messageId: 
 }
 
 async function decline(c: Tx, w: any, staff: any, at: Date) {
-  const r = await c.query(`update app.discount_authorizations set revoked = true where work_item_id = $1 and not revoked`, [w.id])
-  await trace(c, at, 'app', 'refusal', 'Manager declined: nothing authorised', { workItemId: w.id, by: staff.name, revokedEarlier: r.rowCount })
+  const revoked = await replaceDecision(c, w, at, 'manager_decision')
+  await trace(c, at, 'app', 'refusal', 'Manager declined: nothing authorised', { workItemId: w.id, by: staff.name, revokedEarlier: revoked })
   await wakeNow(c, w.id, 'manager declined', at)
-  return r.rowCount ?? 0
+  return revoked
 }
 
 async function attachNote(c: Tx, n: { messageId: string; staff: any; bookingId: string; body: string; refWorkItemId?: string; decision?: NoteDecision; at: Date }): Promise<NoteOutcome> {
@@ -170,7 +192,9 @@ async function attachNote(c: Tx, n: { messageId: string; staff: any; bookingId: 
 /** A manager confirms a suggested or ambiguous note from the interface, with a structured decision. Only then can it authorise. */
 export async function confirmNoteLink(db: Db, a: { clarificationId: number; workItemId: string; staffId: string; decision: NoteDecision; at: Date }) {
   return tx(db, async c => {
-    const staff = await one(c, 'select * from app.staff where id = $1', [a.staffId])
+    const wi = await one(c, 'select booking_id from app.work_items where id = $1', [a.workItemId])
+    const b = await lockBooking(c, wi.booking_id)
+    const staff = await staffInOrg(c, a.staffId, b.org_id)
     const cl = await one(c, `update app.clarifications set status = 'answered' where id = $1 and status = 'open' and $2 = any(candidates) returning *`, [a.clarificationId, a.workItemId])
     if (!cl) return { outcome: 'refused' as const }
     const w = await one(c, 'select * from app.work_items where id = $1', [a.workItemId])
@@ -187,7 +211,8 @@ export async function confirmNoteLink(db: Db, a: { clarificationId: number; work
 
 export async function staffEditsBooking(db: Db, e: { bookingId: string; staffId: string; patch: BookingPatch; at: Date }) {
   return tx(db, async c => {
-    const staff = await one(c, 'select * from app.staff where id = $1', [e.staffId])
+    const b = await lockBooking(c, e.bookingId)
+    const staff = await staffInOrg(c, e.staffId, b.org_id)
     return changeBooking(c, e.bookingId, e.patch, { provenance: 'staff', actor: staff.name }, e.at)
   })
 }
@@ -195,7 +220,8 @@ export async function staffEditsBooking(db: Db, e: { bookingId: string; staffId:
 /** Contact details are not a dependency of any proposal here: no version bump, no wake-up. */
 export async function staffEditsContact(db: Db, e: { contactId: string; staffId: string; phone: string; at: Date }) {
   return tx(db, async c => {
-    const staff = await one(c, 'select * from app.staff where id = $1', [e.staffId])
+    const before = await one(c, 'select org_id from app.contacts where id = $1', [e.contactId])
+    const staff = await staffInOrg(c, e.staffId, before.org_id)
     const ct = await one(c, 'update app.contacts set phone = $2 where id = $1 returning *', [e.contactId, e.phone])
     await c.query(`insert into app.events (org_id, booking_id, kind, provenance, actor, payload, at) values ($1,$2,'contact_changed','staff',$3,$4,$5)`,
       [ct.org_id, ct.booking_id, staff.name, JSON.stringify({ contactId: ct.id, changed: ['phone'] }), e.at])

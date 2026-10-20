@@ -3,6 +3,25 @@ import { one, many } from './db.ts'
 import { trace, money } from './trace.ts'
 import { wakeBatched } from './wake.ts'
 
+/**
+ * Lock order, everywhere: booking first, then work item, proposals, approvals, authorisations, actions.
+ * Every mutation that touches a booking's pending work starts here.
+ */
+export async function lockBooking(c: Tx, bookingId: string) {
+  const b = await one(c, 'select * from app.bookings where id = $1 for update', [bookingId])
+  if (!b) throw new Error(`unknown booking ${bookingId}`)
+  return b
+}
+
+/** Staff identity comes from the session; this checks it belongs to the booking's organisation and role. */
+export async function staffInOrg(c: Tx, staffId: string, orgId: string, roles = ['manager', 'coordinator']) {
+  const s = await one(c, 'select * from app.staff where id = $1', [staffId])
+  if (!s) throw new Error('unknown staff session')
+  if (s.org_id !== orgId) throw new Error(`${s.name} is outside this booking’s organisation`)
+  if (!roles.includes(s.role)) throw new Error(`${s.name} (${s.role}) may not do this`)
+  return s
+}
+
 export type BookingPatch = { guests?: number; title?: string; discountPct?: number }
 export type ChangeSource =
   | { provenance: 'staff'; actor: string }

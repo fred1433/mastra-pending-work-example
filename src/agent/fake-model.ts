@@ -5,7 +5,7 @@ import crypto from 'node:crypto'
 import { MockLanguageModelV3 } from 'ai/test'
 import { parseHeadcount } from '../intake.ts'
 
-type Decision = { tool: string; input: Record<string, unknown> } | { text: string }
+export type Decision = { tool: string; input: Record<string, unknown> } | { text: string }
 export type ModelObserver = (seen: { messages: number; roles: string[]; wakesVisible: number; lastTool?: string }) => void
 let observer: ModelObserver | null = null
 export const observeModel = (fn: ModelObserver | null) => { observer = fn }
@@ -37,12 +37,7 @@ function wakeTarget(prompt: any[]): string | null {
 export function decide(prompt: any[]): Decision {
   const last = prompt[prompt.length - 1]
   const workItemId = wakeTarget(prompt)
-  if (last?.role === 'user') {
-    // Test-only directive: submit a given proposal straight away (used to exercise beforeApproval).
-    const direct = JSON.stringify(last.content).match(/submit=\\"([^"\\]+)\\"/)
-    if (direct) return { tool: 'submitProposal', input: { proposalId: direct[1] } }
-    return workItemId ? { tool: 'readWorkContext', input: { workItemId } } : { text: 'Nothing to do.' }
-  }
+  if (last?.role === 'user') return workItemId ? { tool: 'readWorkContext', input: { workItemId } } : { text: 'Nothing to do.' }
   const r = lastToolResult(prompt)
   if (!r) return { text: 'Nothing to do.' }
   const v = r.value ?? {}
@@ -75,6 +70,7 @@ export function decide(prompt: any[]): Decision {
   }
   if (r.toolName === 'draftProposal') {
     if (v.status === 'drafted') return { tool: 'submitProposal', input: { proposalId: v.proposalId } }
+    if (/read it again/.test(v.reason ?? '')) return { tool: 'readWorkContext', input: { workItemId: wakeTarget(prompt) } }
     return { text: `Draft not possible: ${v.reason}` }
   }
   if (r.toolName === 'submitProposal') {
@@ -89,9 +85,9 @@ export function decide(prompt: any[]): Decision {
   return { text: `${r.toolName}: ${v.status ?? 'ok'}` }
 }
 
-export function fakeModel() {
+export function fakeModel(decideFn: (prompt: any[]) => Decision = decide) {
   const run = (opts: any) => {
-    const d = decide(opts.prompt)
+    const d = decideFn(opts.prompt)
     const wakesVisible = opts.prompt.filter((m: any) => m.role === 'user' && JSON.stringify(m.content).includes('<wake work=')).length
     observer?.({ messages: opts.prompt.length, roles: opts.prompt.map((m: any) => m.role), wakesVisible, lastTool: 'tool' in d ? d.tool : undefined })
     return d

@@ -12,13 +12,13 @@ Always read the request's context first; the booking in Postgres is the current 
 Never write internal notes into a customer reply. Prepare changes as a proposal and ask for approval.`
 
 /** One Mastra instance per worker process. Mastra state lives in the same Postgres, schema "mastra". */
-export function buildAssistant(db: Db) {
+export function buildAssistant(db: Db, opts: { decide?: (prompt: any[]) => any } = {}) {
   const storage = new PostgresStore({ id: 'mastra-pg', connectionString: DATABASE_URL, schemaName: 'mastra' })
   const agent = new Agent({
     id: 'booking-assistant',
     name: 'Booking assistant',
     instructions: INSTRUCTIONS,
-    model: fakeModel() as any, // MockLanguageModelV3 from ai/test; the typings expect a streaming model
+    model: fakeModel(opts.decide) as any, // MockLanguageModelV3 from ai/test; the typings expect a streaming model
     tools: buildTools(db),
     memory: new Memory({ options: { lastMessages: MODEL_WINDOW_MESSAGES } }),
   })

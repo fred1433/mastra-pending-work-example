@@ -9,3 +9,4 @@ export const BATCH_MAX_WAIT_MS = 10 * 60_000
 export const ACTION_LEASE_MS = 30_000
 /** How many recent messages Mastra memory puts back in the model's window. */
 export const MODEL_WINDOW_MESSAGES = 4
+export const WAKE_LEASE_MS = 2 * 60_000

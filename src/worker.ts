@@ -4,7 +4,8 @@ import { RequestContext } from '@mastra/core/request-context'
 import type { Db } from './db.ts'
 import { one, many } from './db.ts'
 import { trace } from './trace.ts'
-import { claimDue } from './wake.ts'
+import { claimDue, ackWake, releaseWake } from './wake.ts'
+import { dispatchOne } from './outbox.ts'
 import { markPendingApproval } from './proposals.ts'
 import { observeModel } from './agent/fake-model.ts'
 import type { Assistant } from './agent/assistant.ts'
@@ -37,25 +38,66 @@ async function withModelTrace<T>(db: Db, at: Date, workItemId: string, fn: () =>
 }
 
 async function afterRun(db: Db, out: any, at: Date) {
+  if (process.env.CRASH_BEFORE_LINK && out.finishReason === 'suspended') process.kill(process.pid, 'SIGKILL')
   if (out.finishReason === 'suspended' && out.suspendPayload?.toolName === 'submitProposal') {
     await markPendingApproval(db, out.suspendPayload.args.proposalId, out.runId, out.suspendPayload.toolCallId, at)
   }
   return out
 }
 
-export async function wakeWork(db: Db, a: Assistant, workItemId: string, reasons: string[], at: Date, extra = '') {
+/**
+ * Mastra may have suspended a run whose link to the proposal was never written (a crash between the two).
+ * Before a new run on the thread, find such runs in Mastra's storage and link them instead of redrafting.
+ */
+export async function reconcileSuspended(db: Db, a: Assistant, workItemId: string, at: Date) {
+  const w = await one(db, 'select * from app.work_items where id = $1', [workItemId])
+  const { runs } = await (a.agent as any).listSuspendedRuns({ threadId: w.mastra_thread, resourceId: w.mastra_resource })
+  let linked = 0
+  for (const r of runs) {
+    for (const tc of r.toolCalls ?? []) {
+      const proposalId = (tc.args as any)?.proposalId
+      if (tc.toolName !== 'submitProposal' || !proposalId) continue
+      const p = await one(db, 'select id, mastra_run_id from app.proposals where id = $1', [proposalId])
+      if (p && !p.mastra_run_id) {
+        await markPendingApproval(db, proposalId, r.runId, tc.toolCallId, at)
+        await trace(db, at, 'worker', 'state', 'Suspended run found in Mastra storage and linked', { proposalId, runId: r.runId })
+        linked++
+      }
+    }
+  }
+  return linked
+}
+
+export async function wakeWork(db: Db, a: Assistant, workItemId: string, reasons: string[], at: Date) {
   const w = await one(db, 'select * from app.work_items where id = $1', [workItemId])
   await trace(db, at, 'worker', 'process', `Run started for ${w.id}`, { workItemId: w.id, reasons, mastraThread: w.mastra_thread, mastraResource: w.mastra_resource })
   const out: any = await withModelTrace(db, at, w.id, () => a.agent.generate(
-    `<wake work="${w.id}" reason="${reasons.join('; ')}"${extra}/>`,
+    `<wake work="${w.id}" reason="${reasons.join('; ')}"/>`,
     { memory: { thread: w.mastra_thread, resource: w.mastra_resource }, requestContext: context(w.id, at), maxSteps: 10 } as any))
   return afterRun(db, out, at)
 }
 
-export async function runDue(db: Db, a: Assistant, at: Date) {
-  const due = await claimDue(db, at)
+/**
+ * Claims one due wake-up at a time under a lease, runs it, and acknowledges it only once the run reached a
+ * durable result (suspended and linked, waiting recorded, or closed). On an error the claim is released.
+ */
+export async function runDue(db: Db, a: Assistant, at: Date, opts: { workerId?: string; onEach?: (workItemId: string) => Promise<void> } = {}) {
+  const workerId = opts.workerId ?? 'worker'
   const results = []
-  for (const d of due) results.push({ workItemId: d.workItemId, groupedEvents: d.groupedEvents, out: await wakeWork(db, a, d.workItemId, d.reasons, at) })
+  for (;;) {
+    const [claim] = await claimDue(db, at, workerId, 1)
+    if (!claim) break
+    try {
+      await reconcileSuspended(db, a, claim.workItemId, at)
+      const out = await wakeWork(db, a, claim.workItemId, claim.reasons, at)
+      await ackWake(db, claim)
+      results.push({ workItemId: claim.workItemId, groupedEvents: claim.groupedEvents, out })
+      await opts.onEach?.(claim.workItemId)
+    } catch (e) {
+      await releaseWake(db, claim)
+      throw e
+    }
+  }
   return results
 }
 
@@ -84,6 +126,23 @@ export async function resumeProposalRun(db: Db, a: Assistant, proposalId: string
   } as any))
   await db.query('update app.proposals set run_closed = true where id = $1', [p.id])
   return afterRun(db, out, at)
+}
+
+/**
+ * One pass of the worker loop, as it would run on a long-lived service: close invalidated runs, resume
+ * approved ones, run due wake-ups, then send what the outbox holds. Polling or LISTEN/NOTIFY decides when.
+ */
+export async function workerTick(db: Db, a: Assistant, workerId: string, at: Date) {
+  const withdrawn = await withdrawInvalidated(db, a, at)
+  const resumed = (await resumeApproved(db, a, at)).length
+  const woken = (await runDue(db, a, at, { workerId })).length
+  const sent = []
+  for (;;) {
+    const r = await dispatchOne(db, { workerId, at })
+    if (r.outcome === 'nothing_to_claim') break
+    sent.push(r)
+  }
+  return { withdrawn, resumed, woken, sent }
 }
 
 export async function resumeApproved(db: Db, a: Assistant, at: Date) {

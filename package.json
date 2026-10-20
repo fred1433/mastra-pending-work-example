@@ -25,7 +25,7 @@
     "db:up": "docker compose up -d --wait",
     "scenario": "node --import tsx scenario/run.ts",
     "test": "node --import tsx --test --test-concurrency=1 --test-reporter=spec test/*.test.ts",
-    "test:record": "node --import tsx --test --test-concurrency=1 --test-reporter=spec test/*.test.ts 2>&1 | tee trace/test-run.txt",
+    "test:record": "node scripts/record-tests.mjs",
     "typecheck": "tsc -p ."
   },
   "license": "MIT"

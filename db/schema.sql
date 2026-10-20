@@ -77,9 +77,14 @@ create table app.work_items (
   resume_at timestamptz,
   mastra_resource text not null,
   mastra_thread text not null,
+  -- Identity of the request: the conversation it started in, and an explicit key when one thread carries
+  -- several requests. At most one open work item per pair, enforced by the index below.
+  origin_conversation_id text not null references app.conversations(id),
+  request_key text not null default 'main',
   created_at timestamptz not null,
   updated_at timestamptz not null
 );
+create unique index work_items_one_open_per_request on app.work_items (origin_conversation_id, request_key) where status <> 'done';
 
 create table app.work_sources (
   work_item_id text not null references app.work_items(id),
@@ -175,13 +180,36 @@ create table app.events (
   at timestamptz not null
 );
 
--- Debounced wake-ups: one row per work item, pushed back while edits keep coming.
+-- Debounced wake-ups: one row per work item, pushed back while ordinary edits keep coming.
+-- A worker claims a row with a lease and deletes it only after the run reached a durable result;
+-- if events arrived meanwhile (event_count moved), the row stays for the next run.
 create table app.wakeups (
   work_item_id text primary key references app.work_items(id),
   reasons text[] not null,
   first_event_at timestamptz not null,
+  last_event_at timestamptz not null,
   run_after timestamptz not null,
-  event_count int not null default 1
+  urgent boolean not null default false,
+  event_count int not null default 1,
+  claimed_by text,
+  claimed_until timestamptz
+);
+
+-- What the application handed the model, so a draft can be tied to the read it was written from.
+create table app.context_reads (
+  id bigserial primary key,
+  work_item_id text not null references app.work_items(id),
+  booking_version int not null,
+  authorisation_id bigint,
+  at timestamptz not null
+);
+
+-- SQL snapshots taken by the scenario after each step, for the reading page.
+create table app.snapshots (
+  seq bigserial primary key,
+  label text not null unique,
+  at timestamptz not null,
+  data jsonb not null
 );
 
 create table app.trace (
