@@ -1,0 +1,32 @@
+{
+  "name": "mastra-pending-work-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@mastra/core": "1.78.0",
+    "@mastra/memory": "1.38.0",
+    "@mastra/pg": "1.31.2",
+    "ai": "7.0.146",
+    "pg": "8.23.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "@types/pg": "8.23.1",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  },
+  "description": "Booking assistant on Mastra: two email threads, an internal approval, a booking change that invalidates the pending draft. Tests on Postgres, scripted model, no API calls.",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "db:up": "docker compose up -d --wait",
+    "scenario": "node --import tsx scenario/run.ts",
+    "test": "node --import tsx --test --test-concurrency=1 --test-reporter=spec test/*.test.ts",
+    "test:record": "node --import tsx --test --test-concurrency=1 --test-reporter=spec test/*.test.ts 2>&1 | tee trace/test-run.txt",
+    "typecheck": "tsc -p ."
+  },
+  "license": "MIT"
+}

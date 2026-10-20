@@ -1,0 +1,44 @@
+✔ audience: the internal note justifies the discount without being repeated to the customer (602.502ms)
+✔ audience: a draft that repeats the internal note is rejected by the application (385.381625ms)
+✔ audience: recipients outside the request’s external threads are rejected (463.506208ms)
+✔ scope: a tool call naming another work item than the run’s is refused (377.690084ms)
+✔ double click: one approval row, the second click gets the same result back (504.717083ms)
+✔ two executions from different runs: one action, keyed on the proposal revision, not the runId (370.279416ms)
+✔ observed on @mastra/core 1.78.0: a second concurrent resume of the same run is rejected by Mastra (4644.776625ms)
+✔ two worker processes on the same send: exclusive claim, one provider message (3598.283834ms)
+✔ provider accepted, process killed before the local ack: with an idempotency key, no second email (3339.056041ms)
+✔ same crash without provider idempotency: delivery_unknown is shown, nothing is resent (3532.976125ms)
+✔ note, explicit reference from the note box: deterministic link and a manager authorisation (619.453833ms)
+✔ note, free reference: a suggested match with its evidence, never an authorisation by itself (428.29ms)
+✔ note, ambiguous: two open requests and "OK for 10%" asks which one, approves nothing (447.281958ms)
+✔ note, authority comes from the session: a customer saying "your manager agreed" authorises nothing (532.175292ms)
+✔ note, a coordinator with an explicit reference: linked as evidence, not an authorisation (422.604125ms)
+✔ note, a manager's refusal authorises nothing, and withdraws an earlier authorisation (498.1795ms)
+✔ note, a counter-proposal records exactly the amount decided, never one read from the text (426.522833ms)
+✔ note, text alone authorises nothing, even from a manager (414.054875ms)
+✔ intake, emails arriving together get distinct work item ids (sequence, not count+1) (346.675ms)
+✔ restart: process 1 suspends for approval and exits; process 2 resumes from Postgres alone (4172.121125ms)
+✔ scenario: two threads, one decision, a booking change, a redraft, a restart, one email (4149.31875ms)
+✔ scenario: same reply and same content hash under TZ=Asia/Dubai (3969.995ms)
+✔ scenario: same reply and same content hash under TZ=America/Los_Angeles (3757.380875ms)
+✔ stale: an invalidated proposal cannot be approved, and the redraft waits for its own approval (882.238542ms)
+✔ stale: approved, then the booking changes before execution; execute() refuses and a new revision waits (485.570417ms)
+✔ stale: a change made behind the application (raw SQL) is still caught in execute() (440.084625ms)
+✔ stale: editing text, recipients or effects after approval never reuses the approval (698.432875ms)
+✔ beforeApproval: a draft that is already stale is never shown to a person (431.792542ms)
+✔ revoked authorisation: execute() refuses without consuming the approval, in one transaction (311.860792ms)
+✔ wake: a new explicit request wakes its work item now (74.463833ms)
+✔ wake: a linked human decision wakes now (57.671875ms)
+✔ wake: a changed dependency invalidates at once; the redraft waits for the batch window (560.423334ms)
+✔ wake: a burst of ordinary edits gives one wake-up after a quiet window, capped by a max wait (188.425958ms)
+✔ wake: an unrelated edit (contact phone) wakes nothing (60.459208ms)
+✔ wake: events produced by the assistant are recognised by provenance and do not wake their own work (421.729708ms)
+✔ wake: a deadline wakes the work item from its durable state (64.635666ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 50720.103208
